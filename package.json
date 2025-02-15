@@ -1,0 +1,19 @@
+{
+  "name": "wiki-security-sessionless",
+  "version": "0.0.1",
+  "description": "A sessionless security module for the federated wiki",
+  "keywords": [
+    "federated",
+    "wiki"
+  ],
+  "license": "MIT",
+  "author": "planetnineisaspaceship",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "sessionless-node": "^0.11.0"
+  }
+}
