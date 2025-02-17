@@ -44,7 +44,12 @@ module.exports = (log, loga, argv) => {
 
   security.isAuthorized = async (req) => {
     if(req.session.key) {
-       const keys = await sessionless.getKeys();
+       try {
+         const keys = await sessionless.getKeys();
+       } catch(err) {
+         req.session.reset();
+         return false;
+       }
        const signature = await sessionless.sign(req.path);
        try {
          const isVerified = sessionless.verifySignature(signature, req.path, keys.pubKey);
