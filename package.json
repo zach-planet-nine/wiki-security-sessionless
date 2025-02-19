@@ -1,6 +1,6 @@
 {
   "name": "wiki-security-sessionless",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A sessionless security module for the federated wiki",
   "repository": "https://github.com/zach-planet-nine/wiki-security-sessionless",
   "keywords": [
