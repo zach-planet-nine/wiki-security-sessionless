@@ -43,22 +43,7 @@ module.exports = (log, loga, argv) => {
   };
 
   security.isAuthorized = async (req) => {
-    if(req.session.key) {
-       try {
-         const keys = await sessionless.getKeys();
-       } catch(err) {
-         req.session.reset();
-         return false;
-       }
-       const signature = await sessionless.sign(req.path);
-       try {
-         const isVerified = sessionless.verifySignature(signature, req.path, keys.pubKey);
-         return isVerified;
-       } catch(err) {
-         return false;
-       }
-    }
-    return false;
+    return req.sessionless && req.sessionless.isVerified;
   }
 
   security.login = async (req, res) => {
@@ -72,10 +57,10 @@ module.exports = (log, loga, argv) => {
 	const keys = await sessionless.generateKeys(saveKeys, getKeys);
 
 	req.session.key = keys.privateKey;
+
 	return res.redirect('/view/welcome-visitors');
       } 
     } catch(err) {}
-    
     
     res.status(403);
     return res.send('unauthorized');
@@ -87,6 +72,34 @@ module.exports = (log, loga, argv) => {
   };
 
   security.defineRoutes = (app, cors, updateOwner) => {
+    app.use(async (req, res, next) => {
+      req.sessionless = req.sessionless || {};
+
+      if(req.session && req.session.key) {
+        try {
+          const keys = await sessionless.getKeys();
+          keys.privateKey = req.session.key;
+          sessionless.getKeys = () => keys;
+        } catch(err) {
+          req.session.reset();
+          req.sessionless.isVerified = false;
+          return next();
+        }
+
+        try {
+          const signature = await sessionless.sign(req.path);
+
+          const isVerified = sessionless.verifySignature(signature, req.path, keys.pubKey);
+          req.sessionless.isVerified = isVerified;
+        } catch(err) {
+          req.sessionless.isVerified = false;
+        }
+      } else {
+        req.sessionless.isVerified = false;
+      }
+
+      next();
+    });
     app.get('/login', cors, security.login);
     app.get('/logout', cors, security.logout);
   };
