@@ -42,7 +42,7 @@ module.exports = (log, loga, argv) => {
     // TODO: This may be relevant if we add joan for PAP
   };
 
-  security.isAuthorized = async (req) => {
+  security.isAuthorized = (req) => {
     return req.sessionless && req.sessionless.isVerified;
   }
 
