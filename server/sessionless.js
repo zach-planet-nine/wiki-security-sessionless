@@ -3,11 +3,11 @@ const sessionless = require('sessionless-node');
 
 console.log('sessionless server starting');
 
-let sessionlessKeys;
-const saveKeys = (_sessionlessKeys) => sessionlessKeys = _sessionlessKeys;
-const getKeys = () => sessionlessKeys;
-
 module.exports = (log, loga, argv) => {
+  let sessionlessKeys;
+  const saveKeys = (_sessionlessKeys) => sessionlessKeys = _sessionlessKeys;
+  const getKeys = () => sessionlessKeys;
+
   const security = {};
 
   const idFile = argv.id;
