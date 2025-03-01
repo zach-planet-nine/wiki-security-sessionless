@@ -3,9 +3,9 @@ const sessionless = require('sessionless-node');
 
 console.log('sessionless server starting');
 
-let keys;
-const saveKeys = (_keys) => keys = _keys;
-const getKeys = () => keys;
+let sessionlessKeys;
+const saveKeys = (_sessionlessKeys) => sessionlessKeys = _sessionlessKeys;
+const getKeys = () => sessionlessKeys;
 
 module.exports = (log, loga, argv) => {
   const security = {};
@@ -53,10 +53,10 @@ module.exports = (log, loga, argv) => {
     const message = timestamp + name;    
     
     try {
-      if(sessionless.verifySignature(signature, message, owner.keys.pubKey)) {
-	const keys = await sessionless.generateKeys(saveKeys, getKeys);
+      if(sessionless.verifySignature(signature, message, owner.sessionlessKeys.pubKey)) {
+	const sessionlessKeys = await sessionless.generateKeys(saveKeys, getKeys);
 
-	req.session.key = keys.privateKey;
+	req.session.key = sessionlessKeys.privateKey;
 
 	return res.redirect('/view/welcome-visitors');
       } 
@@ -77,9 +77,9 @@ module.exports = (log, loga, argv) => {
 
       if(req.session && req.session.key) {
         try {
-          const keys = await sessionless.getKeys();
-          keys.privateKey = req.session.key;
-          sessionless.getKeys = () => keys;
+          const sessionlessKeys = await sessionless.getKeys();
+          sessionlessKeys.privateKey = req.session.key;
+          sessionless.getKeys = () => sessionlessKeys;
         } catch(err) {
           req.session.reset();
           req.sessionless.isVerified = false;
@@ -89,7 +89,7 @@ module.exports = (log, loga, argv) => {
         try {
           const signature = await sessionless.sign(req.path);
 
-          const isVerified = sessionless.verifySignature(signature, req.path, keys.pubKey);
+          const isVerified = sessionless.verifySignature(signature, req.path, sessionlessKeys.pubKey);
           req.sessionless.isVerified = isVerified;
         } catch(err) {
           req.sessionless.isVerified = false;

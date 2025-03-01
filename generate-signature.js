@@ -8,7 +8,7 @@ if(!process.env.PRIVATE_KEY || !process.env.OWNER_NAME) {
 sessionless.getKeys = () => {
   return {
     privateKey: process.env.PRIVATE_KEY,
-    pubKey: ''
+    pubKey: '03dbd40d0dcb3f112ef184ea6de8a8a44808fb55fa99747fc901642e8a4245ed0c'
   };
 };
 
@@ -18,4 +18,6 @@ const message = timestamp + process.env.OWNER_NAME;
 sessionless.sign(message)
   .then(signature => console.log(`?timestamp=${timestamp}&signature=${signature}`))
   .catch(console.error);
+
+
 
