@@ -17,7 +17,7 @@ This plugin expects an owner file that looks like this:
 ```json
 {
   "name": "owner's name",
-  "keys": {
+  "sessionlessKeys": {
     "pubKey": "028a2a944b5bcd93fb130d94abd22bd51569a3fcf17117521f37a7c5466c1baf96"
   }
 }
